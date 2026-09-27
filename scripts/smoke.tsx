@@ -15,6 +15,12 @@ import TestCenter from '../src/pages/TestCenter'
 import Formulas from '../src/pages/Formulas'
 import Stats from '../src/pages/Stats'
 import Settings from '../src/pages/Settings'
+import Planner from '../src/pages/Planner'
+import Tools from '../src/pages/Tools'
+import ArenaPage from '../src/pages/Arena'
+import Daily from '../src/pages/Daily'
+import GlossaryPage from '../src/pages/Glossary'
+import Cheatsheet from '../src/pages/Cheatsheet'
 
 /* Minimale Browser-Stubs */
 const store = new Map<string, string>()
@@ -42,6 +48,13 @@ const routes = [
   ['/karteikarten', <Trainer />],
   ['/test', <TestCenter />],
   ['/formeln', <Formulas />],
+  ['/glossar', <GlossaryPage />],
+  ['/lernplan', <Planner />],
+  ['/tools', <Tools />],
+  ['/arena', <ArenaPage />],
+  ['/taeglich', <Daily />],
+  ['/spickzettel', <Cheatsheet />],
+  ['/spickzettel/physik', <Cheatsheet />],
   ['/statistik', <Stats />],
   ['/einstellungen', <Settings />],
 ] as const
@@ -54,7 +67,7 @@ for (const [path, element] of routes) {
         <MemoryRouter initialEntries={[path]}>
           <Layout>
             <Routes>
-              <Route path={path.replace(/\/(mathe|franzoesisch)$/, '/:id').replace(/\/(ma-|fr-|bio-)[\w-]+$/, '/:id').replace(/\/fr-basis$/, '/:id')} element={element} />
+              <Route path={path.replace(/^\/spickzettel\/physik$/, '/spickzettel/:subjectId').replace(/^\/fach\/(mathe|franzoesisch)$/, '/fach/:id').replace(/\/(ma-|fr-|bio-)[\w-]+$/, '/:id').replace(/\/fr-basis$/, '/:id')} element={element} />
             </Routes>
           </Layout>
         </MemoryRouter>

@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { useStore } from '../lib/storage'
-import { topics } from '../data'
+import { contentStats } from '../data'
 import type { Grade } from '../types'
 
 const AVATARS = ['🦊', '🐼', '🦉', '🐙', '🦄', '🐧', '🦁', '🐝', '🚀', '🧠']
@@ -119,14 +119,76 @@ export default function Settings() {
           checked={store.theme === 'dark'}
           onChange={(v) => set((s) => void (s.theme = v ? 'dark' : 'light'))}
         />
+        <Toggle
+          label="Animationen &amp; Konfetti"
+          desc="Belohnungseffekte bei Bestleistungen. Aus, wenn dich das ablenkt."
+          checked={store.settings.effects}
+          onChange={(v) => set((s) => void (s.settings.effects = v))}
+        />
+        <Toggle
+          label="Vokabeln standardmäßig tippen"
+          desc="Aktiv: Antwort eintippen (wirksamer). Aus: nur umdrehen und selbst bewerten."
+          checked={store.settings.typeMode}
+          onChange={(v) => set((s) => void (s.settings.typeMode = v))}
+        />
+
+        <div>
+          <label className="label">Abfragerichtung bei Vokabeln</label>
+          <select
+            className="input"
+            value={store.settings.vocabDirection}
+            onChange={(e) =>
+              set((s) => void (s.settings.vocabDirection = e.target.value as typeof s.settings.vocabDirection))
+            }
+          >
+            <option value="front-back">Fremdsprache → Deutsch (leichter)</option>
+            <option value="back-front">Deutsch → Fremdsprache (fürs Schreiben)</option>
+            <option value="mixed">Gemischt (empfohlen)</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="label">Schriftgröße im Lesebereich</label>
+          <div className="flex gap-1.5">
+            {(['klein', 'normal', 'gross'] as const).map((f) => (
+              <button
+                key={f}
+                onClick={() => set((s) => void (s.settings.fontSize = f))}
+                className={
+                  store.settings.fontSize === f
+                    ? 'rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-bold text-white'
+                    : 'rounded-lg bg-ink-100 px-3 py-1.5 text-xs font-bold dark:bg-ink-800'
+                }
+              >
+                {f === 'klein' ? 'Klein' : f === 'normal' ? 'Normal' : 'Groß'}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className="label">Fragen im Schnelltest: {store.settings.quickTestCount}</label>
+          <input
+            type="range"
+            min={5}
+            max={40}
+            step={5}
+            value={store.settings.quickTestCount}
+            className="w-full accent-brand-600"
+            onChange={(e) => set((s) => void (s.settings.quickTestCount = Number(e.target.value)))}
+          />
+        </div>
       </section>
 
       <section className="card space-y-4 p-5">
         <h2 className="text-base font-bold">Daten</h2>
         <div className="grid gap-2 text-sm text-ink-500 sm:grid-cols-3">
-          <Info label="Themen im Angebot" value={`${topics.length}`} />
+          <Info label="Themen im Angebot" value={`${contentStats.topics}`} />
+          <Info label="Fragen im Angebot" value={`${contentStats.questions}`} />
+          <Info label="Vokabelkarten" value={`${contentStats.cards}`} />
           <Info label="Bearbeitete Themen" value={`${Object.keys(store.topics).length}`} />
           <Info label="Trainierte Karten" value={`${Object.keys(store.cards).length}`} />
+          <Info label="Geschriebene Tests" value={`${store.results.length}`} />
         </div>
         <div className="flex flex-wrap gap-2">
           <button className="btn-ghost" onClick={exportData}>
@@ -161,6 +223,11 @@ export default function Settings() {
         <p className="mt-2">
           Keine Anmeldung, keine Tracker: Dein Fortschritt wird nur im <code>localStorage</code> deines Browsers
           gespeichert. Wenn du das Gerät wechselst, nimm ein Backup mit.
+        </p>
+        <p className="mt-2">
+          Inhalt aktuell: {contentStats.subjects} Fächer · {contentStats.topics} Themen · {contentStats.questions} Fragen ·{' '}
+          {contentStats.cards} Vokabelkarten in {contentStats.decks} Paketen · {contentStats.formulas} Formeln ·{' '}
+          {contentStats.glossary} Glossareinträge. Tipp: Mit <kbd>Strg</kbd> + <kbd>K</kbd> öffnest du überall die Suche.
         </p>
       </section>
     </div>

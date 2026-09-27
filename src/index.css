@@ -72,3 +72,50 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Lesbarkeit: Schriftgröße im Lesebereich (Einstellungen) */
+.read-klein {
+  font-size: 0.9rem;
+}
+.read-normal {
+  font-size: 1rem;
+}
+.read-gross {
+  font-size: 1.125rem;
+}
+.read-gross .prose-lern p,
+.read-gross li {
+  line-height: 1.85;
+}
+
+/* Tastenkürzel-Anzeige */
+kbd {
+  @apply rounded border border-ink-300 bg-ink-100 px-1.5 py-0.5 font-mono text-[10px] font-bold text-ink-600 dark:border-ink-700 dark:bg-ink-800 dark:text-ink-300;
+}
+
+/* Druckansicht – vor allem für die Spickzettel */
+@media print {
+  aside,
+  header.sticky,
+  nav {
+    display: none !important;
+  }
+  main {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+  .card {
+    border: 1px solid #ddd !important;
+    box-shadow: none !important;
+    break-inside: avoid;
+    background: #fff !important;
+  }
+  body,
+  html {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  * {
+    color: #000 !important;
+  }
+}

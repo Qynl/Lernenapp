@@ -1,4 +1,5 @@
 import type { Deck } from '../types'
+import { extraDecks } from './vocab-extra'
 
 /* Hilfsfunktion: kompakte Kartendefinition -> VocabCard */
 const c = (id: string, front: string, back: string, hint?: string, example?: string) => ({
@@ -9,7 +10,7 @@ const c = (id: string, front: string, back: string, hint?: string, example?: str
   example,
 })
 
-export const builtinDecks: Deck[] = [
+const baseDecks: Deck[] = [
   /* =============================== FRANZÖSISCH ============================== */
   {
     id: 'fr-basis',
@@ -451,4 +452,11 @@ export const builtinDecks: Deck[] = [
   },
 ]
 
+/** Alle mitgelieferten Pakete: Grundpakete + Zusatzpakete. */
+export const builtinDecks: Deck[] = [...baseDecks, ...extraDecks]
+
 export const deckById = Object.fromEntries(builtinDecks.map((d) => [d.id, d])) as Record<string, Deck>
+
+export const decksBySubject = (subjectId: string) => builtinDecks.filter((d) => d.subjectId === subjectId)
+
+export const deckLanguages = [...new Set(builtinDecks.map((d) => d.lang))]

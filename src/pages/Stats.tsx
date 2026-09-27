@@ -1,29 +1,11 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useStore, levelOf, rankOf } from '../lib/storage'
-import { topics, subjects, subjectById, builtinDecks } from '../data'
+import { topics, subjects, subjectById, builtinDecks, BADGES, TIER_STYLE } from '../data'
 import { masteryOf } from '../lib/srs'
 import { todayISO, fmtDate, cls, noteColor } from '../lib/utils'
 import { Progress, Ring, SectionTitle, EmptyState } from '../components/ui'
 
-const BADGES = [
-  { id: 'start', icon: '🌱', name: 'Erster Schritt', desc: 'Erste Übung abgeschlossen', test: (s: ReturnType<typeof useStore>['store']) => s.xp > 0 },
-  { id: 'streak3', icon: '🔥', name: 'Dranbleiber', desc: '3 Tage in Folge gelernt', test: (s: any) => s.streak >= 3 },
-  { id: 'streak7', icon: '🏃', name: 'Wochenheld', desc: '7 Tage Streak', test: (s: any) => s.streak >= 7 },
-  { id: 'xp500', icon: '⭐', name: '500 XP', desc: 'Fleißig gesammelt', test: (s: any) => s.xp >= 500 },
-  { id: 'xp2000', icon: '💎', name: '2000 XP', desc: 'Echte Ausdauer', test: (s: any) => s.xp >= 2000 },
-  { id: 'perfekt', icon: '🎯', name: 'Volltreffer', desc: 'Ein Quiz zu 100 % gelöst', test: (s: any) => s.badges.includes('perfekt') },
-  {
-    id: 'themen10',
-    icon: '📚',
-    name: 'Vielleser',
-    desc: '10 Themen durchgearbeitet',
-    test: (s: any) => Object.values(s.topics).filter((t: any) => t.read).length >= 10,
-  },
-  { id: 'vokabel', icon: '🗂️', name: 'Vokabelprofi', desc: '100 Karten trainiert', test: (s: any) => Object.keys(s.cards).length >= 100 },
-  { id: 'test', icon: '📝', name: 'Prüfungsreif', desc: 'Ersten Test geschrieben', test: (s: any) => s.results.length > 0 },
-  { id: 'eigen', icon: '✍️', name: 'Eigeninitiative', desc: 'Eigenes Vokabelpaket erstellt', test: (s: any) => s.decks.length > 0 },
-]
 
 export default function Stats() {
   const { store } = useStore()
@@ -185,21 +167,34 @@ export default function Stats() {
       </section>
 
       <section>
-        <SectionTitle hint={`${BADGES.filter((b) => b.test(store)).length}/${BADGES.length}`}>Abzeichen</SectionTitle>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-          {BADGES.map((b) => {
-            const got = b.test(store)
-            return (
-              <div
-                key={b.id}
-                className={cls('card p-4 text-center transition', got ? '' : 'opacity-40 grayscale')}
-              >
-                <div className="text-3xl">{b.icon}</div>
-                <div className="mt-1.5 text-xs font-bold">{b.name}</div>
-                <div className="mt-0.5 text-[10px] text-ink-400">{b.desc}</div>
-              </div>
-            )
-          })}
+        <SectionTitle hint={`${store.badges.length}/${BADGES.length} freigeschaltet`}>Abzeichen</SectionTitle>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          {[...BADGES]
+            .map((b) => ({ b, p: b.progress(store) }))
+            .sort((x, y) => (y.p.value >= 1 ? 1 : 0) - (x.p.value >= 1 ? 1 : 0) || y.p.value - x.p.value)
+            .map(({ b, p }) => {
+              const got = p.value >= 1
+              return (
+                <div
+                  key={b.id}
+                  className={cls(
+                    'rounded-2xl border bg-gradient-to-br p-4 text-center transition',
+                    TIER_STYLE[b.tier],
+                    got ? '' : 'opacity-60',
+                  )}
+                  title={b.desc}
+                >
+                  <div className={cls('text-3xl', got ? '' : 'grayscale')}>{b.icon}</div>
+                  <div className="mt-1.5 text-xs font-black">{b.name}</div>
+                  <div className="mt-0.5 text-[10px] leading-tight text-ink-500 dark:text-ink-400">{b.desc}</div>
+                  <div className="mt-2">
+                    <Progress value={p.value * 100} tone={got ? 'green' : 'brand'} />
+                    <div className="mt-1 text-[10px] font-bold text-ink-400">{got ? 'Geschafft ✓' : p.label}</div>
+                  </div>
+                  <div className="mt-1 text-[9px] font-black uppercase tracking-wider text-ink-400">{b.tier}</div>
+                </div>
+              )
+            })}
         </div>
       </section>
 

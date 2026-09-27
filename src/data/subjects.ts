@@ -168,6 +168,17 @@ export const subjects: Subject[] = [
     grades: [5, 6, 7],
     description: 'Der Einstieg in die Naturwissenschaften: Arbeiten mit dem Mikroskop, Stoffe, Technik.',
   },
+  {
+    id: 'lernen',
+    name: 'Lernen lernen',
+    short: 'LL',
+    emoji: '🧠',
+    gradient: 'from-purple-500 to-fuchsia-600',
+    accent: 'purple',
+    grades: ALL,
+    description:
+      'Die Metafächer: Lerntechniken, Zeitmanagement, Prüfungsangst, Konzentration und Recherche – das Fach, das alle anderen leichter macht.',
+  },
 ]
 
 export const subjectById = Object.fromEntries(subjects.map((s) => [s.id, s])) as Record<string, Subject>

@@ -3,9 +3,17 @@ import { useMemo } from 'react'
 import { useStore, levelOf, rankOf } from '../lib/storage'
 import { topics, subjects, subjectById, builtinDecks } from '../data'
 import { isDue } from '../lib/srs'
-import { todayISO, shuffle, plural } from '../lib/utils'
+import { todayISO, shuffle, plural, cls, daysBetween } from '../lib/utils'
 import { Progress, Ring, Chip, SectionTitle } from '../components/ui'
+import { KIND_META, taskLink } from '../lib/plan'
 import type { Grade } from '../types'
+
+const QUICK = [
+  { to: '/taeglich', icon: '📅', label: 'Tägliche Challenge', sub: '8 Fragen, jeden Tag neu' },
+  { to: '/arena', icon: '⚡', label: 'Kopfrechen-Arena', sub: '60 Sekunden Sprint' },
+  { to: '/tools', icon: '🧰', label: 'Werkzeugkasten', sub: 'Rechner mit Rechenweg' },
+  { to: '/spickzettel', icon: '🗒️', label: 'Spickzettel', sub: 'Fach auf einer Seite' },
+]
 
 const GREETINGS = ['Servus', 'Hallo', 'Hi', 'Grüß dich']
 
@@ -37,6 +45,13 @@ export default function Dashboard() {
   }, [myTopics, store.topics])
 
   const mastered = Object.values(store.topics).filter((p) => (p.bestScore ?? 0) >= 0.8).length
+  const iso = todayISO()
+  const dailyDone = store.daily[iso]
+  const todayTasks = useMemo(() => store.tasks.filter((t) => t.date <= iso && !t.done), [store.tasks, iso])
+  const nextExam = useMemo(
+    () => [...store.exams].filter((e) => daysBetween(iso, e.date) >= 0).sort((a, b) => a.date.localeCompare(b.date))[0],
+    [store.exams, iso],
+  )
   const greeting = GREETINGS[new Date().getDay() % GREETINGS.length]
 
   return (
@@ -87,6 +102,92 @@ export default function Dashboard() {
         <Stat icon="⭐" label="Level" value={`${lvl.level}`} sub={rankOf(lvl.level)} />
         <Stat icon="🧠" label="Themen sicher" value={`${mastered}`} sub={`von ${topics.length}`} />
         <Stat icon="🗂️" label="Fällige Karten" value={`${dueCards}`} sub="zur Wiederholung" />
+      </section>
+
+      {/* Heute zu tun */}
+      <section className="grid gap-4 lg:grid-cols-3">
+        <div className="card p-5 lg:col-span-2">
+          <SectionTitle hint={todayTasks.length ? `${todayTasks.length} offen` : 'alles erledigt'}>
+            Heute auf dem Plan
+          </SectionTitle>
+          {todayTasks.length === 0 ? (
+            <p className="mt-2 text-sm text-ink-500 dark:text-ink-400">
+              {store.exams.length === 0
+                ? 'Noch kein Prüfungstermin eingetragen. Der Lernplaner verteilt den Stoff automatisch auf die Tage bis zur Schulaufgabe.'
+                : 'Alle Aufgaben für heute sind abgehakt. Stark! 🎉'}
+            </p>
+          ) : (
+            <ul className="mt-3 space-y-2">
+              {todayTasks.slice(0, 5).map((t) => {
+                const m = KIND_META[t.kind]
+                return (
+                  <li key={t.id}>
+                    <Link
+                      to={taskLink(t)}
+                      className="flex items-center gap-3 rounded-xl border border-ink-200 px-3 py-2 transition hover:border-brand-400 dark:border-ink-800"
+                    >
+                      <span className="text-lg">{m.icon}</span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-sm font-bold">{t.label}</span>
+                        <span className="block text-[11px] text-ink-500">{m.label} · ca. {t.minutes} Min</span>
+                      </span>
+                      <span className="text-xs font-bold text-brand-600 dark:text-brand-300">Los →</span>
+                    </Link>
+                  </li>
+                )
+              })}
+            </ul>
+          )}
+          <Link to="/lernplan" className="mt-3 inline-block text-xs font-bold text-brand-600 dark:text-brand-300">
+            Lernplaner öffnen →
+          </Link>
+        </div>
+
+        <div className="space-y-4">
+          <Link
+            to="/taeglich"
+            className={cls(
+              'card card-hover block p-5',
+              dailyDone && 'ring-1 ring-emerald-500/40',
+            )}
+          >
+            <div className="text-2xl">{dailyDone ? '✅' : '📅'}</div>
+            <div className="mt-1 text-sm font-black">Tägliche Challenge</div>
+            <div className="text-[11px] text-ink-500">
+              {dailyDone ? `Heute: ${dailyDone.correct}/${dailyDone.total} richtig` : 'Heute noch offen – 5 Minuten'}
+            </div>
+          </Link>
+          {nextExam ? (
+            <Link to="/lernplan" className="card card-hover block p-5">
+              <div className="text-[10px] font-black uppercase text-ink-400">Nächste Prüfung</div>
+              <div className="mt-0.5 text-sm font-black">{nextExam.title}</div>
+              <div className="mt-1 text-2xl font-black text-brand-600 dark:text-brand-300">
+                {daysBetween(iso, nextExam.date) === 0
+                  ? 'Heute!'
+                  : `noch ${daysBetween(iso, nextExam.date)} Tage`}
+              </div>
+            </Link>
+          ) : (
+            <Link to="/lernplan" className="card card-hover block p-5">
+              <div className="text-2xl">🗓️</div>
+              <div className="mt-1 text-sm font-black">Schulaufgabe eintragen</div>
+              <div className="text-[11px] text-ink-500">Wir bauen dir automatisch einen Lernplan.</div>
+            </Link>
+          )}
+        </div>
+      </section>
+
+      {/* Schnellzugriff */}
+      <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        {QUICK.map((q) => (
+          <Link key={q.to} to={q.to} className="card card-hover flex items-center gap-3 p-4">
+            <span className="text-2xl">{q.icon}</span>
+            <span className="min-w-0">
+              <span className="block truncate text-sm font-bold">{q.label}</span>
+              <span className="block truncate text-[11px] text-ink-500">{q.sub}</span>
+            </span>
+          </Link>
+        ))}
       </section>
 
       {/* Klassenstufe */}

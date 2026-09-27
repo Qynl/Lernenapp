@@ -1,0 +1,20 @@
+{
+  "name": "Lernstoff – Gymnasium Bayern",
+  "short_name": "Lernstoff",
+  "description": "Lern-App für das bayerische Gymnasium: Themen, Tests, Vokabeltrainer, Formelsammlung.",
+  "lang": "de",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#12141c",
+  "theme_color": "#12141c",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Tägliche Challenge", "url": "/taeglich" },
+    { "name": "Karteikarten", "url": "/karteikarten" },
+    { "name": "Kopfrechen-Arena", "url": "/arena" }
+  ]
+}

@@ -1,5 +1,5 @@
 /* Datenintegrität prüfen: Fächer, IDs, Vokabelverweise, Tabellen */
-import { topics, subjectById, builtinDecks, formulas } from '../src/data'
+import { topics, subjectById, builtinDecks, formulas, glossary, BADGES, contentStats } from '../src/data'
 
 let errors = 0
 const fail = (m: string) => {
@@ -43,10 +43,39 @@ for (const d of builtinDecks) {
   }
 }
 
-for (const f of formulas) if (!subjectById[f.subjectId]) fail(`Unbekanntes Fach in Formel ${f.id}`)
+const formulaIds = new Set<string>()
+for (const f of formulas) {
+  if (formulaIds.has(f.id)) fail(`Doppelte Formel-ID: ${f.id}`)
+  formulaIds.add(f.id)
+  if (!subjectById[f.subjectId]) fail(`Unbekanntes Fach in Formel ${f.id}`)
+  if (!f.tex.trim()) fail(`Leere Formel ${f.id}`)
+  if (!f.grades.length) fail(`Formel ${f.id} ohne Klassenstufen`)
+}
+
+const terms = new Set<string>()
+for (const g of glossary) {
+  const key = `${g.subjectId}:${g.term.toLowerCase()}`
+  if (terms.has(key)) fail(`Doppelter Glossareintrag: ${g.term} (${g.subjectId})`)
+  terms.add(key)
+  if (!subjectById[g.subjectId]) fail(`Unbekanntes Fach im Glossar: ${g.term}`)
+  if (!g.short.trim()) fail(`Glossareintrag ohne Erklärung: ${g.term}`)
+  if (g.topicId && !topicIds.has(g.topicId)) fail(`Glossar verweist auf unbekanntes Thema: ${g.term} → ${g.topicId}`)
+}
+
+const badgeIds = new Set<string>()
+for (const b of BADGES) {
+  if (badgeIds.has(b.id)) fail(`Doppelte Abzeichen-ID: ${b.id}`)
+  badgeIds.add(b.id)
+  if (!b.name || !b.desc) fail(`Abzeichen ${b.id} unvollständig`)
+}
+
+if (contentStats.topics !== topics.length) fail('contentStats.topics stimmt nicht mit den Daten überein')
+if (contentStats.questions !== questionIds.size) fail('contentStats.questions stimmt nicht mit den Daten überein')
 
 console.log(
-  `\nThemen: ${topics.length} · Fragen: ${questionIds.size} · Vokabeln: ${cardIds.size} · Formeln: ${formulas.length}`,
+  `\nFächer: ${contentStats.subjects} · Themen: ${topics.length} · Fragen: ${questionIds.size} · ` +
+    `Vokabeln: ${cardIds.size} in ${builtinDecks.length} Paketen · Formeln: ${formulas.length} · ` +
+    `Glossar: ${glossary.length} · Abzeichen: ${BADGES.length} · Lernzeit: ${contentStats.minutes} Min`,
 )
 console.log(errors ? `\n${errors} Fehler gefunden.` : '\n✓ Alle Daten sind konsistent.')
 process.exit(errors ? 1 : 0)

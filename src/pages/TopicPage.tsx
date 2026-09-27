@@ -5,6 +5,7 @@ import { useStore } from '../lib/storage'
 import { BlockRenderer } from '../components/BlockRenderer'
 import { Quiz } from '../components/Quiz'
 import { Chip, EmptyState } from '../components/ui'
+import { cls } from '../lib/utils'
 
 export default function TopicPage() {
   const { id = '' } = useParams()
@@ -102,7 +103,7 @@ export default function TopicPage() {
 
       {tab === 'lernen' && (
         <>
-          <article className="card p-5 sm:p-6">
+          <article className={cls('card p-5 sm:p-6', `read-${store.settings.fontSize}`)}>
             <BlockRenderer blocks={topic.blocks} />
           </article>
           <div className="flex flex-wrap items-center justify-between gap-3">

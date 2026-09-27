@@ -79,8 +79,13 @@ export function answerMatch(input: string, accepted: string[], strictAccents = f
   return 'wrong' as const
 }
 
-export function fmtDate(ts: number) {
+export function fmtDate(ts: number | string) {
   return new Date(ts).toLocaleDateString('de-DE', { day: '2-digit', month: 'short', year: 'numeric' })
+}
+
+/** Kurzform: "Mo, 28.09." */
+export function fmtDay(iso: string) {
+  return new Date(iso).toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit' })
 }
 
 export function fmtTime(sec: number) {
@@ -123,4 +128,12 @@ export function uid(prefix = 'id') {
 
 export function plural(n: number, one: string, many: string) {
   return `${n} ${n === 1 ? one : many}`
+}
+
+/** "5–7" oder "5, 8, 11" – kompakte Darstellung von Klassenstufen */
+export function gradeRange(grades: number[]) {
+  if (!grades.length) return '–'
+  const g = [...grades].sort((a, b) => a - b)
+  const isRun = g.every((x, i) => i === 0 || x === g[i - 1] + 1)
+  return isRun && g.length > 2 ? `${g[0]}–${g[g.length - 1]}` : g.join(', ')
 }

@@ -1,33 +1,64 @@
 import { useEffect, useState } from 'react'
-import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import type { ReactNode } from 'react'
 import { useStore, levelOf, rankOf } from '../lib/storage'
 import { cls } from '../lib/utils'
-import { searchAll } from '../data'
+import { emit } from '../lib/bus'
 
-const nav = [
-  { to: '/', label: 'Übersicht', icon: '🏠', end: true },
+const navGroups: { title: string; items: { to: string; label: string; icon: string; end?: boolean }[] }[] = [
+  {
+    title: 'Lernen',
+    items: [
+      { to: '/', label: 'Übersicht', icon: '🏠', end: true },
+      { to: '/faecher', label: 'Fächer', icon: '📚' },
+      { to: '/vokabeln', label: 'Vokabeln', icon: '🗂️' },
+      { to: '/karteikarten', label: 'Karteikarten', icon: '🎴' },
+    ],
+  },
+  {
+    title: 'Üben',
+    items: [
+      { to: '/test', label: 'Test & Prüfung', icon: '📝' },
+      { to: '/taeglich', label: 'Tägliche Challenge', icon: '📅' },
+      { to: '/arena', label: 'Kopfrechen-Arena', icon: '⚡' },
+    ],
+  },
+  {
+    title: 'Nachschlagen',
+    items: [
+      { to: '/formeln', label: 'Formelsammlung', icon: '📐' },
+      { to: '/glossar', label: 'Glossar', icon: '📖' },
+      { to: '/spickzettel', label: 'Spickzettel', icon: '🗒️' },
+      { to: '/tools', label: 'Werkzeugkasten', icon: '🧰' },
+    ],
+  },
+  {
+    title: 'Organisieren',
+    items: [
+      { to: '/lernplan', label: 'Lernplan', icon: '🗓️' },
+      { to: '/statistik', label: 'Fortschritt', icon: '📈' },
+      { to: '/einstellungen', label: 'Einstellungen', icon: '⚙️' },
+    ],
+  },
+]
+
+const mobileNav = [
+  { to: '/', label: 'Start', icon: '🏠', end: true },
   { to: '/faecher', label: 'Fächer', icon: '📚' },
-  { to: '/vokabeln', label: 'Vokabeln', icon: '🗂️' },
-  { to: '/test', label: 'Test & Prüfung', icon: '📝' },
-  { to: '/karteikarten', label: 'Karteikarten', icon: '⚡' },
-  { to: '/formeln', label: 'Formelsammlung', icon: '📐' },
-  { to: '/statistik', label: 'Fortschritt', icon: '📈' },
-  { to: '/einstellungen', label: 'Einstellungen', icon: '⚙️' },
+  { to: '/taeglich', label: 'Täglich', icon: '📅' },
+  { to: '/karteikarten', label: 'Karten', icon: '🎴' },
+  { to: '/lernplan', label: 'Plan', icon: '🗓️' },
 ]
 
 export function Layout({ children }: { children: ReactNode }) {
   const { store, set } = useStore()
   const [open, setOpen] = useState(false)
-  const [q, setQ] = useState('')
   const loc = useLocation()
-  const navigate = useNavigate()
   const lvl = levelOf(store.xp)
-  const results = q.length >= 2 ? searchAll(q) : []
 
   useEffect(() => {
     setOpen(false)
-    setQ('')
+    window.scrollTo({ top: 0 })
   }, [loc.pathname])
 
   return (
@@ -35,9 +66,16 @@ export function Layout({ children }: { children: ReactNode }) {
       {/* Sidebar Desktop */}
       <aside className="sticky top-0 hidden h-screen w-64 flex-none flex-col border-r border-ink-200 bg-white p-4 dark:border-ink-800 dark:bg-ink-900 lg:flex">
         <Brand />
-        <nav className="mt-6 flex-1 space-y-1">
-          {nav.map((n) => (
-            <NavItem key={n.to} {...n} />
+        <nav className="mt-5 flex-1 space-y-4 overflow-y-auto no-scrollbar">
+          {navGroups.map((g) => (
+            <div key={g.title}>
+              <div className="mb-1 px-3 text-[10px] font-black uppercase tracking-wider text-ink-400">{g.title}</div>
+              <div className="space-y-0.5">
+                {g.items.map((n) => (
+                  <NavItem key={n.to} {...n} />
+                ))}
+              </div>
+            </div>
           ))}
         </nav>
         <LevelCard xp={store.xp} streak={store.streak} lvl={lvl} />
@@ -54,35 +92,16 @@ export function Layout({ children }: { children: ReactNode }) {
             <span className="font-extrabold tracking-tight">Lernstoff</span>
           </Link>
 
-          <div className="relative ml-auto w-full max-w-md">
-            <input
-              className="input !py-2 pl-9"
-              placeholder="Thema suchen – z. B. Pythagoras, passé composé …"
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && results[0]) navigate(`/thema/${results[0].id}`)
-                if (e.key === 'Escape') setQ('')
-              }}
-            />
-            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm opacity-50">🔍</span>
-            {results.length > 0 && (
-              <div className="absolute left-0 right-0 top-12 z-50 max-h-96 overflow-auto rounded-2xl border border-ink-200 bg-white p-2 shadow-xl dark:border-ink-800 dark:bg-ink-900">
-                {results.map((t) => (
-                  <Link
-                    key={t.id}
-                    to={`/thema/${t.id}`}
-                    className="block rounded-xl px-3 py-2 hover:bg-ink-100 dark:hover:bg-ink-800"
-                  >
-                    <div className="text-sm font-semibold">{t.title}</div>
-                    <div className="text-xs text-ink-500">
-                      {t.grade}. Klasse · {t.teaser.slice(0, 70)}…
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
+          <button
+            onClick={() => emit('palette', undefined)}
+            className="ml-auto flex w-full max-w-md items-center gap-2 rounded-xl border border-ink-200 bg-ink-50 px-3 py-2 text-left text-sm text-ink-400 transition hover:border-brand-400 dark:border-ink-800 dark:bg-ink-900"
+          >
+            <span className="opacity-60">🔍</span>
+            <span className="truncate">Suchen: Themen, Formeln, Vokabeln, Begriffe …</span>
+            <kbd className="ml-auto hidden shrink-0 rounded border border-ink-300 px-1.5 py-0.5 text-[10px] font-bold dark:border-ink-700 sm:block">
+              ⌘K
+            </kbd>
+          </button>
 
           <button
             className="btn-ghost !px-2.5 !py-2"
@@ -100,7 +119,7 @@ export function Layout({ children }: { children: ReactNode }) {
 
         {/* Mobile Bottom Nav */}
         <nav className="fixed bottom-0 left-0 right-0 z-30 flex border-t border-ink-200 bg-white/95 backdrop-blur dark:border-ink-800 dark:bg-ink-950/95 lg:hidden">
-          {nav.slice(0, 5).map((n) => (
+          {mobileNav.map((n) => (
             <NavLink
               key={n.to}
               to={n.to}
@@ -113,7 +132,7 @@ export function Layout({ children }: { children: ReactNode }) {
               }
             >
               <span className="text-lg">{n.icon}</span>
-              {n.label.split(' ')[0]}
+              {n.label}
             </NavLink>
           ))}
         </nav>
@@ -128,9 +147,16 @@ export function Layout({ children }: { children: ReactNode }) {
             onClick={(e) => e.stopPropagation()}
           >
             <Brand />
-            <nav className="mt-6 space-y-1">
-              {nav.map((n) => (
-                <NavItem key={n.to} {...n} />
+            <nav className="mt-6 space-y-4">
+              {navGroups.map((g) => (
+                <div key={g.title}>
+                  <div className="mb-1 px-3 text-[10px] font-black uppercase tracking-wider text-ink-400">{g.title}</div>
+                  <div className="space-y-0.5">
+                    {g.items.map((n) => (
+                      <NavItem key={n.to} {...n} />
+                    ))}
+                  </div>
+                </div>
               ))}
             </nav>
             <div className="mt-4">

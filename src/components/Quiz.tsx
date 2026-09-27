@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { Question } from '../types'
 import { useStore } from '../lib/storage'
 import { answerMatch, cls, shuffle } from '../lib/utils'
@@ -74,6 +74,39 @@ export function Quiz({ questions, mode = 'practice', onFinish, compact }: Props)
     }
   }
 
+  /* Tastatursteuerung: A–D bzw. 1–4 wählen, Enter prüft / geht weiter. */
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      const el = e.target as HTMLElement | null
+      const typing = el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')
+      if (done) return
+      if (e.key === 'Enter') {
+        e.preventDefault()
+        if (checked) next()
+        else check()
+        return
+      }
+      if (typing) return
+      const cur = list[idx]
+      if (!cur || checked) return
+      const k = e.key.toLowerCase()
+      const pos = /^[1-9]$/.test(k) ? Number(k) - 1 : k >= 'a' && k <= 'i' ? k.charCodeAt(0) - 97 : -1
+      if (cur.type === 'mc' && pos >= 0 && pos < cur.options.length) setAnswer(pos)
+      if (cur.type === 'multi' && pos >= 0 && pos < cur.options.length) {
+        setAnswer((a) => {
+          const arr = Array.isArray(a) ? [...(a as number[])] : []
+          return arr.includes(pos) ? arr.filter((x) => x !== pos) : [...arr, pos]
+        })
+      }
+      if (cur.type === 'truefalse') {
+        if (k === 'r' || k === 'j') setAnswer(true)
+        if (k === 'f' || k === 'n') setAnswer(false)
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  })
+
   function restart(onlyWrong = false) {
     if (onlyWrong) {
       const again = list.filter((x) => wrongIds.includes(x.id))
@@ -136,6 +169,9 @@ export function Quiz({ questions, mode = 'practice', onFinish, compact }: Props)
         <Progress value={((idx + (checked ? 1 : 0)) / list.length) * 100} className="flex-1" />
         <span className="chip bg-emerald-50 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300">
           ✓ {correctCount}
+        </span>
+        <span className="hidden text-[10px] font-semibold text-ink-400 sm:block" title="Tastenkürzel">
+          <kbd>A–D</kbd> wählen · <kbd>⏎</kbd> prüfen
         </span>
       </div>
 

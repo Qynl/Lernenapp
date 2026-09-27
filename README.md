@@ -4,15 +4,16 @@ Eine komplette, offline-fähige Lern-Web-App: **alle Hauptfächer ausführlich e
 Prüfungssimulation, Formelsammlung und einem Vokabeltrainer mit Spaced Repetition. Kein Konto, keine Cloud,
 keine Werbung – dein Fortschritt bleibt im Browser.
 
-![Fächer](https://img.shields.io/badge/F%C3%A4cher-16-blue) ![Themen](https://img.shields.io/badge/Themen-77-green) ![Fragen](https://img.shields.io/badge/%C3%9Cbungsfragen-272-orange) ![Vokabeln](https://img.shields.io/badge/Vokabeln-330-violet)
+![Fächer](https://img.shields.io/badge/F%C3%A4cher-17-blue) ![Themen](https://img.shields.io/badge/Themen-125-green) ![Fragen](https://img.shields.io/badge/%C3%9Cbungsfragen-537-orange) ![Vokabeln](https://img.shields.io/badge/Vokabeln-688-violet) ![Formeln](https://img.shields.io/badge/Formeln-140-teal) ![Glossar](https://img.shields.io/badge/Glossar-138-slate)
 
 ---
 
 ## Was drin ist
 
-### 📚 16 Fächer, 77 ausgearbeitete Themen
+### 📚 17 Fächer, 125 ausgearbeitete Themen
 Mathematik · Deutsch · Englisch · Französisch · Latein · Spanisch · Physik · Chemie · Biologie ·
-Geschichte · Geographie · Informatik · Wirtschaft & Recht · Politik & Gesellschaft · Ethik/Religion · Natur & Technik
+Geschichte · Geographie · Informatik · Wirtschaft & Recht · Politik & Gesellschaft · Ethik/Religion ·
+Natur & Technik · **Lernen lernen** (Lerntechniken, Zeitmanagement, Prüfungsangst, Recherche)
 
 Jedes Thema enthält:
 
@@ -30,8 +31,10 @@ Inhalte reichen von Bruchrechnen (5. Klasse) bis Integralrechnung, Binomialverte
 Dramenanalyse (Abitur). Abiturrelevante Themen sind markiert.
 
 ### 🗂️ Vokabeltrainer mit Leitner-System
-- **9 fertige Pakete** (Französisch Grundwortschatz & unregelmäßige Verben, Englisch Irregular Verbs & Abiturwortschatz,
-  Latein, Spanisch, rhetorische Mittel, Bio- und Geschichts-Fachbegriffe) – insgesamt 330 Karten
+- **23 fertige Pakete** mit **688 Karten**: Französisch (Grundwortschatz, Verben, Alltag, Schule, Konnektoren),
+  Englisch (Irregular Verbs, Abiturwortschatz, Phrasal Verbs, False Friends), Latein (Grundwortschatz, Stammformen),
+  Spanisch (Basis, Verben) sowie Fachbegriffe aus Deutsch, Mathe, Physik, Chemie, Biologie, Geschichte,
+  Geographie, Informatik und Ethik
 - **Eigene Vokabeln eintragen**: einzeln oder als Massen-Import per Copy-Paste (`vocable = Übersetzung`, auch Tab/Semikolon)
 - **Drei Abfragemodi**: Karte umdrehen · Tippen (mit Tippfehler-Toleranz und „fast richtig"-Erkennung) · Multiple Choice
 - **Richtung wählbar**: Fremdsprache → Deutsch, umgekehrt oder gemischt
@@ -42,17 +45,46 @@ Fach, Jahrgangsstufe und Aufgabenzahl wählen → Test mit Timer, Aufgabennaviga
 Bewertung nach **bayerischem Notenschlüssel (1–6)**, in der Oberstufe zusätzlich **Notenpunkte 0–15**.
 Danach vollständige Auswertung mit Erklärung und direktem Link zum passenden Thema.
 
-### 📐 Formelsammlung
-77 Formeln aus Mathe, Physik, Chemie, Biologie, Geographie und Wirtschaft – durchsuchbar und nach
-Fach **und Jahrgangsstufe** filterbar.
+### 📅 Tägliche Challenge
+Jeden Tag acht gemischte Fragen aus allen Fächern – für alle identisch, weil sie aus dem Datum abgeleitet werden.
+Dazu Begriff, Formel und Thema des Tages, eine 14-Tage-Historie und Bonus-XP für eine fehlerfreie Runde.
+
+### ⚡ Kopfrechen-Arena
+60-Sekunden-Sprint in vier Schwierigkeitsstufen (Klasse 5/6 bis Oberstufe: Ableitungen, Logarithmen, Prozente).
+Combo-Bonus für Serien, −3 Sekunden pro Fehler, Rekordverwaltung und ein Tipp zu jeder Aufgabe.
+
+### 🗓️ Lernplaner
+Schulaufgabe mit Datum, Themen und Vokabelpaketen eintragen → die App verteilt den Stoff automatisch auf die
+verbleibenden Tage, in drei Phasen: **erst verstehen, dann üben, dann wiederholen** – inklusive Probetest kurz
+vor dem Termin. Auf dem Dashboard steht danach jeden Tag, was konkret dran ist.
+
+### 🧰 Werkzeugkasten
+Acht Rechner, die den **kompletten Rechenweg** ausgeben statt nur das Ergebnis: quadratische Gleichungen
+(Diskriminante, Scheitelpunkt, Faktorisierung), Bruchrechnen mit Hauptnenner, Prozent- und Zinsrechnung
+(auch Zinseszins), ggT/kgV mit Primfaktorzerlegung, Geradengleichung aus zwei Punkten, rechtwinkliges Dreieck,
+Statistik (Median, Quartile, Standardabweichung) und ein Einheitenumrechner.
+
+### 📐 Formelsammlung & 📖 Glossar
+**140 Formeln** aus Mathe, Physik, Chemie, Biologie, Geographie, Informatik, Ernährung und Wirtschaft –
+durchsuchbar und nach Fach **und Jahrgangsstufe** filterbar. Dazu ein **Glossar mit 138 Fachbegriffen**,
+alphabetisch, nach Fach filterbar und mit Link zum passenden Thema.
+
+### 🗒️ Spickzettel
+Pro Fach eine verdichtete Seite mit allen Merksätzen, Stolperfallen, Formeln, Schritt-für-Schritt-Rezepten und
+Begriffen – nach Jahrgangsstufe filterbar und mit eigenem Druck-Layout (PDF-Export über den Browser).
 
 ### 📈 Motivation & Fortschritt
-XP, Level mit 13 Rängen („Formelfuchs", „Abi-Aspirant", „Lernlegende"), Tagesziel-Ring, Streak-Zähler,
-10 Abzeichen, 12-Wochen-Heatmap, Fortschritt pro Fach und eine Übersicht der Leitner-Fächer.
+XP, Level mit 13 Rängen („Formelfuchs“, „Abi-Aspirant“, „Lernlegende“), Tagesziel-Ring, Streak-Zähler,
+**28 Abzeichen in vier Stufen** (Bronze bis Platin) mit Fortschrittsbalken, 12-Wochen-Heatmap,
+Fortschritt pro Fach und eine Übersicht der Leitner-Fächer. Level-Ups und Bestleistungen werden mit
+Toast-Meldungen und Konfetti gefeiert (abschaltbar).
 
 ### Außerdem
-Volltextsuche über alle Inhalte · eigene Notizen pro Thema · Merkliste · Dark/Light Mode ·
-Backup-Export und -Import als JSON · vollständig responsiv (Mobile-Bottom-Nav + Desktop-Sidebar).
+**Befehlspalette mit Strg/⌘ + K** (durchsucht Themen, Formeln, Vokabelpakete, Glossar und alle Seiten) ·
+Tastensteuerung im Quiz (A–D bzw. 1–4 wählen, Enter prüfen) · **Pomodoro-Fokustimer** mit Einheitenzähler ·
+eigene Notizen pro Thema · Merkliste · Dark/Light Mode · einstellbare Schriftgröße im Lesebereich ·
+**PWA: installierbar und offline nutzbar** · Backup-Export und -Import als JSON ·
+vollständig responsiv (Mobile-Bottom-Nav + Desktop-Sidebar).
 
 ---
 
@@ -88,12 +120,16 @@ npm run check      # build + validate + smoke
 src/
 ├── data/
 │   ├── subjects.ts          Fächerdefinition
-│   ├── topics/              die Lerninhalte (nach Fach/Jahrgangsstufe getrennt)
-│   ├── vocab.ts             fertige Vokabelpakete
-│   └── formulas.ts          Formelsammlung
-├── components/              Layout, Quiz-Engine, Block-Renderer, UI-Bausteine
-├── pages/                   Dashboard, Fächer, Thema, Vokabeln, Trainer, Test, Formeln, Statistik
-├── lib/                     Store (Context + localStorage), SRS, Hilfsfunktionen
+│   ├── topics/              die Lerninhalte (13 Dateien, nach Fach/Jahrgangsstufe getrennt)
+│   ├── vocab.ts             fertige Vokabelpakete (+ vocab-extra.ts)
+│   ├── formulas.ts          Formelsammlung
+│   ├── glossary.ts          Fachbegriffe
+│   ├── badges.ts            28 Abzeichen mit Fortschrittslogik
+│   └── index.ts             Registry, contentStats, searchEverything()
+├── components/              Layout, Quiz-Engine, Block-Renderer, Befehlspalette, Pomodoro, UI-Bausteine
+├── pages/                   Dashboard, Fächer, Thema, Vokabeln, Trainer, Test, Tagesquiz, Arena,
+│                            Lernplan, Werkzeugkasten, Formeln, Glossar, Spickzettel, Statistik
+├── lib/                     Store (Context + localStorage), SRS, Lernplan-Generator, Rechner, Event-Bus
 └── types.ts                 Datenmodell
 ```
 
@@ -125,6 +161,17 @@ Ein Thema ist ein reines Datenobjekt – neue Themen brauchen keinen neuen Code:
 Verfügbare Block-Typen: `text`, `formula`, `merksatz`, `warn`, `example`, `steps`, `list`, `table`,
 `compare`, `vocabhint`. Fragetypen: `mc`, `multi`, `input`, `truefalse`.
 Nach dem Ergänzen `npm run validate` laufen lassen.
+
+---
+
+## Tastenkürzel
+
+| Taste | Wirkung |
+|---|---|
+| `Strg` / `⌘` + `K` | Befehlspalette: alles durchsuchen und direkt hinspringen |
+| `A`–`D` bzw. `1`–`4` | Antwortmöglichkeit im Quiz wählen |
+| `Enter` | Antwort prüfen bzw. zur nächsten Frage |
+| `Esc` | Befehlspalette schließen |
 
 ---
 

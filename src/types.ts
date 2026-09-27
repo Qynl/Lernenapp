@@ -162,6 +162,55 @@ export interface Profile {
   avatar: string
 }
 
+/* --------------------------- Lernplaner --------------------------- */
+
+export interface Exam {
+  id: string
+  subjectId: string
+  title: string
+  /** ISO-Datum YYYY-MM-DD */
+  date: string
+  topicIds: string[]
+  deckIds: string[]
+  note?: string
+  createdAt: number
+}
+
+export interface PlanTask {
+  id: string
+  examId: string
+  date: string
+  label: string
+  kind: 'read' | 'quiz' | 'vocab' | 'review' | 'test'
+  topicId?: string
+  deckId?: string
+  minutes: number
+  done?: boolean
+}
+
+/* ---------------------------- Glossar ----------------------------- */
+
+export interface GlossaryEntry {
+  term: string
+  subjectId: string
+  short: string
+  long?: string
+  synonyms?: string[]
+  topicId?: string
+}
+
+/* --------------------------- Abzeichen ---------------------------- */
+
+export interface Badge {
+  id: string
+  icon: string
+  name: string
+  desc: string
+  tier: 'bronze' | 'silber' | 'gold' | 'platin'
+  /** Fortschritt 0..1 und Textform */
+  progress: (s: Store) => { value: number; label: string }
+}
+
 export interface Store {
   version: number
   profile: Profile
@@ -178,10 +227,26 @@ export interface Store {
   favorites: string[]
   notes: Record<string, string>
   theme: 'dark' | 'light'
+  /** Prüfungstermine des Lernplaners */
+  exams: Exam[]
+  /** generierte Lernplan-Aufgaben */
+  tasks: PlanTask[]
+  /** Kopfrechen-Arena */
+  arena: { best: number; games: number; correct: number; wrong: number }
+  /** Tagesquiz: Datum -> Ergebnis */
+  daily: Record<string, { correct: number; total: number; xp: number }>
+  /** Fokus-Timer */
+  focus: { sessions: number; minutes: number }
   settings: {
     vocabDirection: 'front-back' | 'back-front' | 'mixed'
     typeMode: boolean
     sound: boolean
     strictAccents: boolean
+    /** Animationen & Konfetti */
+    effects: boolean
+    /** Schriftgröße im Lesebereich */
+    fontSize: 'klein' | 'normal' | 'gross'
+    /** Anzahl Fragen im Schnelltest */
+    quickTestCount: number
   }
 }
